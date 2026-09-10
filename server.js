@@ -54,6 +54,8 @@ app.get('/api/auth/me', (request, response) => {
     response.json({ user });
 });
 
+app.get('/api/health', (request, response) => response.json({ ok: true, service: 'bitsplitter-api' }));
+
 function readState() {
     if (!fs.existsSync(dataFile)) return { members: [], expenses: [] };
     return JSON.parse(fs.readFileSync(dataFile, 'utf8'));
@@ -201,6 +203,10 @@ app.post('/api/settlement', requireAuth, (request, response) => {
     if (state.members.length < 2) return errorResponse(response, 400, 'Add at least 2 group members to calculate settlements.');
     if (state.expenses.length === 0) return errorResponse(response, 400, 'Please record at least one expense first.');
     response.json(calculateSettlement(state.members, state.expenses));
+});
+
+app.use('/api', (request, response) => {
+    response.status(404).json({ error: `API route not found: ${request.method} ${request.path}` });
 });
 
 app.get('/', (request, response) => response.sendFile(path.join(publicDirectory, 'index.html')));

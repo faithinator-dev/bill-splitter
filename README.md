@@ -48,6 +48,22 @@ To use another port on Windows PowerShell:
 $env:PORT=4000; npm start
 ```
 
+## Deployment
+
+BitSplitter must be deployed as a Node/Express web service because account creation, login, sessions, and expense APIs run in `server.js`. Configure the deployment with:
+
+- Build/install command: `npm install`
+- Start command: `npm start`
+- Health check: `GET /api/health`
+
+The health check should return JSON similar to:
+
+```json
+{ "ok": true, "service": "bitsplitter-api" }
+```
+
+Do not deploy only the `public/` folder to GitHub Pages or another static-only host. Static hosting cannot run `/api/auth/register`, which causes the browser to receive an HTML page and produce `Unexpected token '<'` while parsing the response as JSON.
+
 ## Project Structure
 
 ```text

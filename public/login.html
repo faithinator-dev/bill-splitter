@@ -80,7 +80,10 @@
             if (mode === 'register') payload.name = document.getElementById('name').value;
             try {
                 const response = await fetch(`/api/auth/${mode}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                const result = await response.json();
+                const contentType = response.headers.get('content-type') || '';
+                const result = contentType.includes('application/json')
+                    ? await response.json()
+                    : { error: `The deployed server returned HTML instead of the login API. Make sure the deployment runs the Express server with npm start. (HTTP ${response.status})` };
                 if (!response.ok) throw new Error(result.error);
                 window.location.href = '/app';
             } catch (error) { message.textContent = error.message; }
