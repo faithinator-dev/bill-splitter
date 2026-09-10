@@ -12,6 +12,8 @@ BitSplitter is a server-backed group expense splitter. Add people, record shared
 - View total spending, member count, expense count, and settlement preview
 - Print or save the settlement receipt as a PDF from the browser
 - Responsive public interface for desktop and mobile screens
+- Local account registration and login with protected workspace access
+- Equal splitting with the payer excluded by default, plus an option to include them
 
 ## Requirements
 
@@ -32,11 +34,13 @@ Start the server:
 npm start
 ```
 
-Open the application at:
+Open the landing page at:
 
 ```text
 http://localhost:3000
 ```
+
+Select **Open workspace** to sign in or create an account. The expense workspace is available at `/app` after authentication.
 
 To use another port on Windows PowerShell:
 
@@ -49,7 +53,9 @@ $env:PORT=4000; npm start
 ```text
 .
 ├── public/
-│   ├── index.html   # Application markup and design system
+│   ├── index.html   # Public landing page
+│   ├── app.html     # Authenticated expense workspace
+│   ├── login.html   # Sign-in and account registration page
 │   ├── main.js      # Browser client for the Express API
 │   └── style.css    # Dashboard styling
 ├── data/
@@ -75,6 +81,10 @@ All API responses use JSON.
 | `DELETE` | `/api/expenses/:id` | Delete an expense |
 | `DELETE` | `/api/state` | Clear all members and expenses |
 | `POST` | `/api/settlement` | Calculate balances and recommended payments |
+| `POST` | `/api/auth/register` | Create an account and start a session |
+| `POST` | `/api/auth/login` | Sign in and start a session |
+| `POST` | `/api/auth/logout` | End the current session |
+| `GET` | `/api/auth/me` | Return the current signed-in user |
 
 Example expense request:
 
@@ -107,7 +117,7 @@ Example settlement response:
 
 ## How Settlement Works
 
-Each expense credits the person who paid and divides the expense equally across its selected beneficiaries. The server then separates people who owe money from people who should receive money and matches those balances using a greedy settlement algorithm.
+Each expense credits the person who paid and divides the expense equally across its selected beneficiaries. In the workspace, the payer is excluded from the selected beneficiaries by default because they already paid. Turn on **Include the payer in the equal split** when the payer also consumed the expense. The server then separates people who owe money from people who should receive money and matches those balances using a greedy settlement algorithm.
 
 For example, if Alice pays ₦100 for Alice and Bob, Alice receives a ₦50 credit and Bob owes ₦50. The suggested payment is:
 
@@ -117,7 +127,7 @@ Bob pays Alice ₦50
 
 ## Development Notes
 
-The current version stores one shared group in `data/bitsplitter.json`. It is suitable for local use, demos, and early product development. It does not yet provide user accounts, authentication, multiple independent groups, or database-level concurrency control.
+The current version stores one shared group in `data/bitsplitter.json` and local accounts in `data/users.json`. It is suitable for local use, demos, and early product development. Sessions are held in server memory, so restarting the server signs users out. The app does not yet provide multiple independent groups or database-level concurrency control.
 
 For production, the next backend steps should be:
 

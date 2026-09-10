@@ -11,11 +11,16 @@ const memberCount = document.getElementById('memberCount');
 const expenseCount = document.getElementById('expenseCount');
 const settlementCount = document.getElementById('settlementCount');
 const balanceSummary = document.getElementById('balanceSummary');
+const includePayer = document.getElementById('includePayer');
 let state = { members: [], expenses: [] };
 
 async function api(url, options = {}) {
 	const response = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
 	const payload = await response.json();
+	if (response.status === 401) {
+		window.location.href = '/login';
+		throw new Error('Your session has expired.');
+	}
 	if (!response.ok) throw new Error(payload.error || 'The server could not complete that request.');
 	return payload;
 }
@@ -32,6 +37,17 @@ function renderMembers() {
 		: '<span style="font-size:0.85rem; color:var(--text-muted);">No members added yet.</span>';
 	payerSelect.innerHTML = '<option value="" disabled selected>Select member</option>' + state.members.map(member => `<option value="${escapeHtml(member)}">${escapeHtml(member)}</option>`).join('');
 	splitCheckboxes.innerHTML = state.members.map(member => `<label class="checkbox-label"><input type="checkbox" value="${escapeHtml(member)}" checked><span>${escapeHtml(member)}</span></label>`).join('');
+	updatePayerSplit();
+}
+
+function updatePayerSplit() {
+	const payer = payerSelect.value;
+	const boxes = Array.from(splitCheckboxes.querySelectorAll('input'));
+	boxes.forEach(input => { input.disabled = false; });
+	const payerBox = boxes.find(input => input.value === payer);
+	if (!payerBox) return;
+	payerBox.disabled = !includePayer.checked;
+	payerBox.checked = includePayer.checked;
 }
 
 function renderExpenses() {
@@ -76,6 +92,9 @@ async function addExpense(event) {
 	} catch (error) { showError(error); }
 }
 
+payerSelect.addEventListener('change', updatePayerSplit);
+includePayer.addEventListener('change', updatePayerSplit);
+
 async function deleteExpense(id) {
 	try { state = await api(`/api/expenses/${id}`, { method: 'DELETE' }); render(); await renderSummary(); } catch (error) { showError(error); }
 }
@@ -95,6 +114,11 @@ async function calculateSettlement() {
 		receiptWrapper.style.display = 'block';
 		receiptWrapper.scrollIntoView({ behavior: 'smooth' });
 	} catch (error) { showError(error); }
+}
+
+async function logout() {
+	await fetch('/api/auth/logout', { method: 'POST' });
+	window.location.href = '/';
 }
 
 refresh().catch(showError);

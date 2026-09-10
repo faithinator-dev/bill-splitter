@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in — BitSplitter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --ink:#eef5f4; --muted:#9caaa9; --line:rgba(238,245,244,.14); --aqua:#69e6d0; --night:#0b1417; --panel:#122326; }
+        * { box-sizing:border-box; }
+        body { min-height:100vh; margin:0; display:grid; place-items:center; padding:1rem; color:var(--ink); background:radial-gradient(circle at 20% 15%,rgba(105,230,208,.14),transparent 28rem),var(--night); font-family:'DM Sans',sans-serif; }
+        a { color:var(--aqua); text-decoration:none; }
+        .auth-shell { width:min(100%, 430px); }
+        .brand { display:flex; align-items:center; justify-content:center; gap:.65rem; margin-bottom:1.5rem; color:var(--ink); font:700 1.3rem 'Space Grotesk',sans-serif; }
+        .brand-mark { display:grid; place-items:center; width:2.2rem; height:2.2rem; color:#122326; background:var(--aqua); border-radius:8px; }
+        .auth-card { padding:2rem; border:1px solid var(--line); border-radius:18px; background:rgba(18,35,38,.86); box-shadow:0 25px 70px rgba(0,0,0,.3); }
+        h1 { margin:0; font:700 2rem 'Space Grotesk',sans-serif; letter-spacing:-.04em; }
+        .intro { margin:.6rem 0 1.6rem; color:var(--muted); font-size:.92rem; }
+        .tabs { display:grid; grid-template-columns:1fr 1fr; gap:.35rem; margin-bottom:1.4rem; padding:.3rem; border-radius:8px; background:rgba(255,255,255,.06); }
+        .tab { padding:.65rem; border:0; border-radius:6px; color:var(--muted); background:transparent; cursor:pointer; font:600 .9rem 'DM Sans',sans-serif; }
+        .tab.active { color:#102022; background:var(--aqua); }
+        label { display:block; margin:1rem 0 .4rem; color:var(--muted); font-size:.78rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+        input { width:100%; padding:.85rem 1rem; border:1px solid var(--line); border-radius:8px; outline:0; color:var(--ink); background:rgba(0,0,0,.2); font:inherit; }
+        input:focus { border-color:var(--aqua); box-shadow:0 0 0 3px rgba(105,230,208,.12); }
+        button[type=submit] { width:100%; margin-top:1.4rem; padding:.9rem; border:0; border-radius:8px; color:#102022; background:var(--aqua); cursor:pointer; font:700 .95rem 'DM Sans',sans-serif; }
+        .message { min-height:1.25rem; margin-top:1rem; color:#ffad66; font-size:.85rem; }
+        .back { display:block; margin-top:1.25rem; color:var(--muted); text-align:center; font-size:.85rem; }
+    </style>
+</head>
+<body>
+    <main class="auth-shell">
+        <a class="brand" href="/"><span class="brand-mark">₦</span> BitSplitter</a>
+        <section class="auth-card">
+            <h1 id="authTitle">Welcome back.</h1>
+            <p class="intro" id="authIntro">Sign in to continue to your expense workspace.</p>
+            <div class="tabs"><button class="tab active" id="loginTab" type="button">Sign in</button><button class="tab" id="registerTab" type="button">Create account</button></div>
+            <form id="authForm">
+                <div id="nameField" hidden><label for="name">Your name</label><input id="name" autocomplete="name"></div>
+                <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+                <label for="password">Password</label><input id="password" type="password" minlength="6" autocomplete="current-password" required>
+                <button type="submit" id="submitButton">Sign in</button>
+                <div class="message" id="message" role="alert"></div>
+            </form>
+            <a class="back" href="/">← Back to BitSplitter home</a>
+        </section>
+    </main>
+    <script>
+        const form = document.getElementById('authForm');
+        const nameField = document.getElementById('nameField');
+        const loginTab = document.getElementById('loginTab');
+        const registerTab = document.getElementById('registerTab');
+        const authTitle = document.getElementById('authTitle');
+        const authIntro = document.getElementById('authIntro');
+        const submitButton = document.getElementById('submitButton');
+        const message = document.getElementById('message');
+        let mode = 'login';
+
+        function setMode(nextMode) {
+            mode = nextMode;
+            const register = mode === 'register';
+            nameField.hidden = !register;
+            document.getElementById('name').required = register;
+            loginTab.classList.toggle('active', !register);
+            registerTab.classList.toggle('active', register);
+            authTitle.textContent = register ? 'Create your account.' : 'Welcome back.';
+            authIntro.textContent = register ? 'Save your groups and settle shared costs with clarity.' : 'Sign in to continue to your expense workspace.';
+            submitButton.textContent = register ? 'Create account' : 'Sign in';
+            document.getElementById('password').autocomplete = register ? 'new-password' : 'current-password';
+            message.textContent = '';
+        }
+
+        loginTab.onclick = () => setMode('login');
+        registerTab.onclick = () => setMode('register');
+        form.onsubmit = async event => {
+            event.preventDefault();
+            message.textContent = '';
+            const payload = { email: document.getElementById('email').value, password: document.getElementById('password').value };
+            if (mode === 'register') payload.name = document.getElementById('name').value;
+            try {
+                const response = await fetch(`/api/auth/${mode}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error);
+                window.location.href = '/app';
+            } catch (error) { message.textContent = error.message; }
+        };
+    </script>
+</body>
+</html>

@@ -3,867 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BillSplitter — Simplify Group Expenses with Smart Settlements</title>
-    
-    <!-- Fonts & Icons -->
+    <meta name="description" content="BitSplitter makes shared expenses clear, fair, and easy to settle.">
+    <title>BitSplitter — Shared expenses, finally simple</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/style.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* ==========================================================================
-           1. CORE STYLES & QUAD-MORPHISM DESIGN SYSTEM
-           ========================================================================== */
         :root {
-            --bg-navy: #0A0E1A;
-            --teal-gradient: linear-gradient(135deg, #00F2FE 0%, #4FACFE 100%);
-            --purple-gradient: linear-gradient(135deg, #7F00FF 0%, #E100FF 100%);
-            --clay-accent: linear-gradient(145deg, #20B2AA, #008B8B);
-            
-            --text-light: #F8FAFC;
-            --text-muted: #94A3B8;
-            
-            --font-sans: 'Plus Jakarta Sans', sans-serif;
-            --font-display: 'Space Grotesk', sans-serif;
+            --ink: #eef5f4;
+            --muted: #9caaa9;
+            --line: rgba(238, 245, 244, 0.13);
+            --surface: rgba(255, 255, 255, 0.065);
+            --aqua: #69e6d0;
+            --orange: #ffad66;
+            --night: #0b1417;
+            --deep: #122326;
+            --sans: 'DM Sans', sans-serif;
+            --display: 'Space Grotesk', sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
-            font-family: var(--font-sans);
-            background-color: var(--bg-navy);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(225, 0, 255, 0.12) 0%, transparent 40%);
-            background-attachment: fixed;
-            color: var(--text-light);
-            min-height: 100vh;
-            padding-bottom: 4rem;
+            margin: 0;
+            color: var(--ink);
+            background: var(--night);
+            font-family: var(--sans);
             line-height: 1.5;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-
-        /* --------------------------------------------------------------------------
-           A. GLASSMORPHISM (Foundations, Header, Cards)
-           -------------------------------------------------------------------------- */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.37);
-            padding: 2rem;
-            transition: all 0.3s ease;
-        }
-
-        .glass-header {
-            background: rgba(10, 14, 26, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            padding: 1.25rem 0;
-            margin-bottom: 2.5rem;
-        }
-
-        /* --------------------------------------------------------------------------
-           B. CLAYMORPHISM (Primary Actions/Buttons)
-           -------------------------------------------------------------------------- */
-        .clay-btn {
-            background: linear-gradient(135deg, #00D2FF 0%, #3A7BD5 100%);
-            border: none;
-            border-radius: 16px;
-            color: #FFFFFF;
-            font-family: var(--font-sans);
-            font-weight: 700;
-            font-size: 0.95rem;
-            padding: 0.85rem 1.75rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            box-shadow: 
-                6px 6px 12px rgba(0, 0, 0, 0.3),
-                inset -4px -4px 8px rgba(0, 0, 0, 0.25),
-                inset 4px 4px 8px rgba(255, 255, 255, 0.4);
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .clay-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 
-                8px 8px 16px rgba(0, 0, 0, 0.4),
-                inset -4px -4px 8px rgba(0, 0, 0, 0.3),
-                inset 4px 4px 8px rgba(255, 255, 255, 0.5);
-        }
-
-        .clay-btn:active {
-            transform: translateY(1px);
-            box-shadow: 
-                2px 2px 4px rgba(0, 0, 0, 0.3),
-                inset 2px 2px 4px rgba(0, 0, 0, 0.4);
-        }
-
-        .clay-btn-purple {
-            background: linear-gradient(135deg, #9D50BB 0%, #6E48AA 100%);
-        }
-
-        /* --------------------------------------------------------------------------
-           C. NEUMORPHISM (Inputs, Dropdowns, Toggles)
-           -------------------------------------------------------------------------- */
-        .neu-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .neu-input-group label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .neu-input {
-            background: #0D1322;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            padding: 0.9rem 1.2rem;
-            color: var(--text-light);
-            font-family: var(--font-sans);
-            font-size: 0.95rem;
-            outline: none;
-            box-shadow: 
-                inset 3px 3px 6px rgba(0, 0, 0, 0.6),
-                inset -3px -3px 6px rgba(255, 255, 255, 0.03);
-            transition: all 0.2s ease;
-        }
-
-        .neu-input:focus {
-            border-color: #00F2FE;
-            box-shadow: 
-                inset 4px 4px 8px rgba(0, 0, 0, 0.8),
-                inset -2px -2px 4px rgba(255, 255, 255, 0.05),
-                0 0 10px rgba(0, 242, 254, 0.2);
-        }
-
-        select.neu-input {
-            appearance: none;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1em;
-        }
-
-        /* --------------------------------------------------------------------------
-           D. SKEUOMORPHISM (Currency Icon & Final Receipt)
-           -------------------------------------------------------------------------- */
-        .skeuo-currency-badge {
-            background: linear-gradient(145deg, #FFD700, #DAA520);
-            color: #3A2500;
-            font-family: var(--font-display);
-            font-weight: 800;
-            font-size: 1.1rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 
-                1px 2px 4px rgba(0,0,0,0.4),
-                inset 0px 1px 1px rgba(255,255,255,0.8),
-                inset 0px -1px 2px rgba(0,0,0,0.4);
-            border: 1px solid #B8860B;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.4);
-        }
-
-        .skeuo-receipt {
-            background: #FAF8F5;
-            color: #1E293B;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 2rem;
-            border-radius: 4px;
-            position: relative;
-            box-shadow: 
-                0 10px 30px rgba(0,0,0,0.5),
-                0 0 0 1px rgba(0,0,0,0.1);
-            background-image: repeating-linear-gradient(#FAF8F5, #FAF8F5 24px, #F1EDE4 25px);
-        }
-
-        /* Jagged receipt edge */
-        .skeuo-receipt::before {
-            content: "";
-            position: absolute;
-            top: -10px;
-            left: 0;
-            right: 0;
-            height: 10px;
-            background: radial-gradient(circle, transparent, transparent 50%, #FAF8F5 50%, #FAF8F5 100%);
-            background-size: 16px 20px;
-            background-position: 0 -10px;
-        }
-
-        .skeuo-receipt::after {
-            content: "";
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            right: 0;
-            height: 10px;
-            background: radial-gradient(circle, transparent, transparent 50%, #FAF8F5 50%, #FAF8F5 100%);
-            background-size: 16px 20px;
-        }
-
-        /* ==========================================================================
-           2. LAYOUT & INTERFACE ELEMENTS
-           ========================================================================== */
-        .app-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .logo {
-            font-family: var(--font-display);
-            font-size: 1.6rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .logo-accent {
-            background: var(--teal-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .main-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        @media (max-width: 900px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .card-title {
-            font-family: var(--font-display);
-            font-size: 1.25rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Member Chips */
-        .member-chips-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            min-height: 42px;
-        }
-
-        .member-chip {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 0.4rem 0.8rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .member-chip button {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .member-chip button:hover {
-            color: #FF5252;
-        }
-
-        /* Expense List Items */
-        .expense-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            max-height: 320px;
-            overflow-y: auto;
-            padding-right: 0.25rem;
-        }
-
-        .expense-item {
-            background: rgba(13, 19, 34, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .expense-info h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-        }
-
-        .expense-info p {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-        }
-
-        .expense-amount {
-            font-family: var(--font-display);
-            font-weight: 700;
-            color: #00F2FE;
-            font-size: 1.1rem;
-        }
-
-        /* Checkbox list for splits */
-        .split-checkbox-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            font-size: 0.85rem;
-            cursor: pointer;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 0.4rem 0.6rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        /* Settlement Output */
-        .settlement-card {
-            grid-column: span 2;
-            margin-top: 1rem;
-        }
-
-        @media (max-width: 900px) {
-            .settlement-card {
-                grid-column: span 1;
-            }
-        }
-
-        .transaction-line {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 0;
-            border-bottom: 1px dashed #CBD5E1;
-            font-size: 0.9rem;
-        }
-
-        .transaction-line:last-child {
-            border-bottom: none;
-        }
-
-        .payer { font-weight: 700; color: #DC2626; }
-        .payee { font-weight: 700; color: #16A34A; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media print {
-            body * { visibility: hidden; }
-            .skeuo-receipt, .skeuo-receipt * { visibility: visible; }
-            .skeuo-receipt { position: absolute; left: 0; top: 0; width: 100%; }
-            .no-print { display: none !important; }
+        a { color: inherit; text-decoration: none; }
+        .landing-shell { overflow: hidden; background: radial-gradient(circle at 78% 18%, rgba(105, 230, 208, 0.14), transparent 28rem), var(--night); }
+        .landing-container { width: min(1120px, calc(100% - 3rem)); margin: 0 auto; }
+        .landing-nav { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 0; }
+        .brand { display: flex; align-items: center; gap: 0.7rem; font-family: var(--display); font-weight: 700; font-size: 1.15rem; }
+        .brand-mark { display: grid; place-items: center; width: 2rem; height: 2rem; color: #122326; background: var(--aqua); border-radius: 8px; font-weight: 700; }
+        .nav-links { display: flex; align-items: center; gap: 1.5rem; color: var(--muted); font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--ink); }
+        .nav-cta, .hero-cta { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; color: #0d191b; background: var(--aqua); border-radius: 7px; font-weight: 700; transition: transform 180ms ease, box-shadow 180ms ease; }
+        .nav-cta { padding: 0.65rem 1rem; }
+        .hero-cta { padding: 0.95rem 1.35rem; box-shadow: 0 12px 30px rgba(105, 230, 208, 0.16); }
+        .nav-cta:hover, .hero-cta:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(105, 230, 208, 0.25); }
+        .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 5rem; min-height: 620px; padding: 5rem 0 6rem; }
+        .kicker { color: var(--aqua); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+        h1, h2 { margin: 0; font-family: var(--display); line-height: 1.02; letter-spacing: -0.04em; }
+        h1 { max-width: 680px; margin-top: 1rem; font-size: clamp(3.2rem, 7vw, 6.3rem); }
+        .hero-copy { max-width: 560px; margin: 1.5rem 0 2rem; color: var(--muted); font-size: 1.12rem; }
+        .hero-note { margin-left: 1rem; color: var(--muted); font-size: 0.82rem; }
+        .hero-visual { position: relative; min-height: 390px; }
+        .visual-board { position: absolute; inset: 2rem 0 0 2rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 18px; background: rgba(18, 35, 38, 0.82); box-shadow: 25px 25px 0 rgba(105, 230, 208, 0.08), 0 25px 70px rgba(0,0,0,0.32); transform: rotate(3deg); }
+        .board-top { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.74rem; }
+        .board-total { margin: 2.2rem 0 1.8rem; font-family: var(--display); font-size: 2.8rem; }
+        .board-total small { display: block; color: var(--muted); font-family: var(--sans); font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
+        .balance-row { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 0; border-top: 1px solid var(--line); font-size: 0.9rem; }
+        .balance-row span:last-child { color: var(--orange); font-weight: 700; }
+        .balance-row .positive { color: var(--aqua) !important; }
+        .section { padding: 5.5rem 0; border-top: 1px solid var(--line); }
+        .section-heading { max-width: 620px; margin-bottom: 2.5rem; }
+        h2 { font-size: clamp(2rem, 4vw, 3.5rem); }
+        .section-heading p { color: var(--muted); font-size: 1.05rem; }
+        .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .feature { min-height: 210px; padding: 1.5rem; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+        .feature-number { color: var(--orange); font-family: var(--display); font-size: 1.5rem; }
+        .feature h3 { margin: 2.5rem 0 0.5rem; font-family: var(--display); font-size: 1.15rem; }
+        .feature p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+        .cta-band { display: flex; align-items: center; justify-content: space-between; gap: 2rem; padding: 3rem; border: 1px solid rgba(105, 230, 208, 0.25); border-radius: 16px; background: linear-gradient(110deg, rgba(105, 230, 208, 0.13), rgba(255, 173, 102, 0.08)); }
+        .cta-band h2 { max-width: 650px; font-size: clamp(2rem, 4vw, 3.5rem); }
+        footer { padding: 2rem 0 3rem; color: var(--muted); font-size: 0.8rem; }
+        @media (max-width: 760px) {
+            .landing-container { width: min(100% - 2rem, 560px); }
+            .nav-links a:not(.nav-cta) { display: none; }
+            .hero { grid-template-columns: 1fr; gap: 2rem; min-height: auto; padding: 4rem 0 5rem; }
+            h1 { font-size: clamp(3rem, 16vw, 5rem); }
+            .hero-copy { font-size: 1rem; }
+            .hero-note { display: block; margin: 1rem 0 0; }
+            .hero-visual { min-height: 330px; }
+            .visual-board { inset: 1rem 0 0 0; }
+            .feature-grid { grid-template-columns: 1fr; }
+            .feature { min-height: auto; }
+            .feature h3 { margin-top: 1.5rem; }
+            .cta-band { align-items: flex-start; flex-direction: column; padding: 2rem 1.5rem; }
         }
     </style>
 </head>
 <body>
+    <div class="landing-shell">
+        <header class="landing-container landing-nav">
+            <a class="brand" href="/"><span class="brand-mark">₦</span> BitSplitter</a>
+            <nav class="nav-links" aria-label="Main navigation">
+                <a href="#how-it-works">How it works</a>
+                <a href="#why-bitsplitter">Why BitSplitter</a>
+                <a class="nav-cta" href="/app">Open workspace <span aria-hidden="true">→</span></a>
+            </nav>
+        </header>
 
-    <!-- GLASSMORPHISM HEADER -->
-    <header class="glass-header">
-        <div class="container app-header">
-            <div class="logo">
-                <span class="skeuo-currency-badge">₦</span>
-                <span>Bill<span class="logo-accent">Splitter</span></span>
-            </div>
-            <div style="font-size: 0.85rem; color: var(--text-muted);" class="no-print">
-                <span>v1.0.0</span> &nbsp;|&nbsp; <a href="https://github.com/faithinator_dev/bill-splitter" target="_blank" rel="noopener noreferrer">GitHub</a>
-            </div>
-        </div>
-    </header>
-
-    <main class="container">
-        
-        <!-- INTRO & PROBLEM/SOLUTION BANNER -->
-        <div class="glass-card" style="margin-bottom: 2rem; padding: 1.5rem 2rem;">
-            <p style="font-size: 1.05rem; color: #CBD5E1; max-width: 900px;">
-                <strong>Simplify Group Expenses with Smart Settlements.</strong> Stop tracking debts in spreadsheets or fighting over shared rent, trips, and meals. Enter team members, record expenses, and let BillSplitter compute the minimum possible money transfers required.
-            </p>
-        </div>
-
-        <section class="dashboard-summary" aria-label="Group summary">
-            <div class="summary-heading">
+        <main>
+            <section class="landing-container hero">
                 <div>
-                    <span class="eyebrow">Live group overview</span>
-                    <h1>Make the money part simple.</h1>
+                    <span class="kicker">Shared money, less awkwardness</span>
+                    <h1>Split the cost. Keep the friendship.</h1>
+                    <p class="hero-copy">BitSplitter turns group expenses into a clear, fair plan. Add the people, log what was paid, and get the fewest payments needed to settle up.</p>
+                    <a class="hero-cta" href="/app">Start splitting <span aria-hidden="true">↗</span></a>
+                    <span class="hero-note">No spreadsheet gymnastics required.</span>
                 </div>
-                <span class="summary-status"><span class="status-dot"></span> Server synced</span>
-            </div>
-            <div class="summary-stats">
-                <div class="summary-stat"><span class="summary-label">Total spent</span><strong id="totalSpent">₦0.00</strong><span class="summary-note">Across this group</span></div>
-                <div class="summary-stat"><span class="summary-label">Members</span><strong id="memberCount">0</strong><span class="summary-note">People sharing costs</span></div>
-                <div class="summary-stat"><span class="summary-label">Expenses</span><strong id="expenseCount">0</strong><span class="summary-note">Recorded so far</span></div>
-                <div class="summary-stat summary-stat-accent"><span class="summary-label">Next move</span><strong id="settlementCount">Add your first expense</strong><span class="summary-note" id="balanceSummary">No balances to settle yet</span></div>
-            </div>
-        </section>
-
-        <div class="main-grid">
-
-            <!-- STEP 1: MEMBER MANAGEMENT CARD -->
-            <section class="glass-card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fa-solid fa-users text-teal-400" style="color:#00F2FE;"></i> 1. Group Members</h2>
-                </div>
-
-                <div class="neu-input-group">
-                    <label for="memberNameInput">Add Person</label>
-                    <div style="display: flex; gap: 0.75rem;">
-                        <input type="text" id="memberNameInput" class="neu-input" style="flex: 1;" placeholder="e.g. Tunde, Chika, Sarah..." onkeydown="if(event.key==='Enter') addMember()">
-                        <button onclick="addMember()" class="clay-btn" style="padding: 0.85rem 1.25rem;">
-                            <i class="fa-solid fa-plus"></i> Add
-                        </button>
-                    </div>
-                </div>
-
-                <div style="margin-top: 1rem;">
-                    <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">Active Group Members:</label>
-                    <div class="member-chips-container" id="membersContainer">
-                        <!-- Dynamic member chips -->
+                <div class="hero-visual" aria-label="Example settlement dashboard">
+                    <div class="visual-board">
+                        <div class="board-top"><span>Weekend in Lagos</span><span>Live group</span></div>
+                        <div class="board-total"><small>Total shared spend</small>₦184,500</div>
+                        <div class="balance-row"><span>Amaka owes</span><span>₦22,500</span></div>
+                        <div class="balance-row"><span>David owes</span><span>₦14,000</span></div>
+                        <div class="balance-row"><span>Tolu receives</span><span class="positive">₦36,500</span></div>
                     </div>
                 </div>
             </section>
 
-            <!-- STEP 2: EXPENSE ENTRY CARD -->
-            <section class="glass-card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fa-solid fa-receipt" style="color:#E100FF;"></i> 2. Add Expense</h2>
-                </div>
-
-                <form id="expenseForm" onsubmit="addExpense(event)">
-                    <div class="neu-input-group">
-                        <label for="expenseTitle">Expense Description</label>
-                        <input type="text" id="expenseTitle" class="neu-input" placeholder="e.g. Airbnb Rent, Dinner, Fuel" required>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="neu-input-group">
-                            <label for="expenseAmount">Amount (₦)</label>
-                            <input type="number" step="0.01" id="expenseAmount" class="neu-input" placeholder="0.00" required>
-                        </div>
-
-                        <div class="neu-input-group">
-                            <label for="payerSelect">Paid By</label>
-                            <select id="payerSelect" class="neu-input" required>
-                                <option value="" disabled selected>Select member</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="neu-input-group">
-                        <label>Split Amongst</label>
-                        <div class="split-checkbox-grid" id="splitCheckboxes">
-                            <!-- Dynamic checkboxes for splitting -->
-                        </div>
-                    </div>
-
-                    <button type="submit" class="clay-btn clay-btn-purple" style="width: 100%; margin-top: 0.5rem;">
-                        <i class="fa-solid fa-cart-plus"></i> Record Expense
-                    </button>
-                </form>
-            </section>
-
-            <!-- STEP 3: EXPENSE LOG -->
-            <section class="glass-card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fa-solid fa-list-check" style="color:#00F2FE;"></i> Expense Log</h2>
-                    <button onclick="clearAllData()" style="background:none; border:none; color:#FF5252; cursor:pointer; font-size:0.8rem; font-weight:600;">Clear All</button>
-                </div>
-
-                <div class="expense-list" id="expenseList">
-                    <!-- Dynamic Expense items -->
-                </div>
-            </section>
-
-            <!-- STEP 4: CALCULATION & RECEIPT (SKEUOMORPHIC OUTPUT) -->
-            <section class="glass-card">
-                <div class="card-header">
-                    <h2 class="card-title"><i class="fa-solid fa-calculator" style="color:#E100FF;"></i> Settlement Engine</h2>
-                </div>
-
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
-                    Our algorithm minimizes total cash movements by netting balances between all group members.
-                </p>
-
-                <button onclick="calculateSettlement()" class="clay-btn" style="width: 100%; margin-bottom: 1.5rem;">
-                    <i class="fa-solid fa-bolt"></i> Compute Optimized Balances
-                </button>
-
-                <!-- Skeuomorphic Printed Receipt -->
-                <div id="receiptWrapper" style="display: none;">
-                    <div class="skeuo-receipt" id="receiptContent">
-                        <div style="text-align: center; margin-bottom: 1rem; border-bottom: 2px dashed #94A3B8; padding-bottom: 0.75rem;">
-                            <h3 style="font-family: var(--font-display); font-size: 1.2rem; font-weight:800; text-transform: uppercase;">BillSplitter Receipt</h3>
-                            <p style="font-size: 0.75rem; color: #64748B;" id="receiptDate"></p>
-                        </div>
-
-                        <div id="receiptTransactions">
-                            <!-- Transactions rendered here -->
-                        </div>
-
-                        <div style="margin-top: 1.5rem; border-top: 2px dashed #94A3B8; padding-top: 0.75rem; text-align: center; font-size: 0.75rem; color: #64748B;">
-                            *** SMART SETTLEMENT COMPLETE ***
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;" class="no-print">
-                        <button onclick="window.print()" class="clay-btn clay-btn-purple" style="flex:1; font-size:0.8rem;">
-                            <i class="fa-solid fa-print"></i> Print / Save PDF
-                        </button>
+            <section class="section" id="how-it-works">
+                <div class="landing-container">
+                    <div class="section-heading"><span class="kicker">A calmer workflow</span><h2>From “who paid?” to done.</h2><p>Every part of the process has one job, so the group can move from spending to settling without the usual back-and-forth.</p></div>
+                    <div class="feature-grid">
+                        <article class="feature"><span class="feature-number">01</span><h3>Build the group</h3><p>Add everyone sharing the costs. The workspace keeps the group visible and ready for the first expense.</p></article>
+                        <article class="feature"><span class="feature-number">02</span><h3>Log the real world</h3><p>Record who paid, how much it was, and exactly who should share that expense.</p></article>
+                        <article class="feature"><span class="feature-number">03</span><h3>Settle with clarity</h3><p>BitSplitter nets the balances and gives you a short payment plan instead of a tangle of IOUs.</p></article>
                     </div>
                 </div>
             </section>
 
-        </div>
-    </main>
-
-    <!-- STATE MANAGEMENT & SETTLEMENT ALGORITHM -->
-    <script>if (false) {
-        // State
-        let members = JSON.parse(localStorage.getItem('bs_members')) || [];
-        let expenses = JSON.parse(localStorage.getItem('bs_expenses')) || [];
-
-        // DOM Elements
-        const memberNameInput = document.getElementById('memberNameInput');
-        const membersContainer = document.getElementById('membersContainer');
-        const payerSelect = document.getElementById('payerSelect');
-        const splitCheckboxes = document.getElementById('splitCheckboxes');
-        const expenseList = document.getElementById('expenseList');
-        const receiptWrapper = document.getElementById('receiptWrapper');
-        const receiptTransactions = document.getElementById('receiptTransactions');
-        const receiptDate = document.getElementById('receiptDate');
-
-        // Init App
-        document.addEventListener('DOMContentLoaded', () => {
-            renderMembers();
-            renderExpenses();
-        });
-
-        function saveData() {
-            localStorage.setItem('bs_members', JSON.stringify(members));
-            localStorage.setItem('bs_expenses', JSON.stringify(expenses));
-        }
-
-        // --- MEMBER MANAGEMENT ---
-        function addMember() {
-            const name = memberNameInput.value.trim();
-            if (!name) return;
-            if (members.includes(name)) {
-                alert('Member already exists in this group!');
-                return;
-            }
-
-            members.push(name);
-            memberNameInput.value = '';
-            saveData();
-            renderMembers();
-        }
-
-        function removeMember(name) {
-            members = members.filter(m => m !== name);
-            // Remove member from existing expense splits
-            expenses.forEach(exp => {
-                exp.beneficiaries = exp.beneficiaries.filter(b => b !== name);
-            });
-            saveData();
-            renderMembers();
-            renderExpenses();
-        }
-
-        function renderMembers() {
-            membersContainer.innerHTML = '';
-            payerSelect.innerHTML = '<option value="" disabled selected>Select member</option>';
-            splitCheckboxes.innerHTML = '';
-
-            if (members.length === 0) {
-                membersContainer.innerHTML = '<span style="font-size:0.85rem; color:var(--text-muted);">No members added yet.</span>';
-                return;
-            }
-
-            members.forEach(member => {
-                // Render Chips
-                const chip = document.createElement('div');
-                chip.className = 'member-chip';
-                chip.innerHTML = `
-                    <span>${escapeHtml(member)}</span>
-                    <button onclick="removeMember('${escapeHtml(member)}')"><i class="fa-solid fa-xmark"></i></button>
-                `;
-                membersContainer.appendChild(chip);
-
-                // Populate Payer Select Option
-                const option = document.createElement('option');
-                option.value = member;
-                option.textContent = member;
-                payerSelect.appendChild(option);
-
-                // Populate Checkboxes for splitting
-                const label = document.createElement('label');
-                label.className = 'checkbox-label';
-                label.innerHTML = `
-                    <input type="checkbox" value="${escapeHtml(member)}" checked>
-                    <span>${escapeHtml(member)}</span>
-                `;
-                splitCheckboxes.appendChild(label);
-            });
-        }
-
-        // --- EXPENSE MANAGEMENT ---
-        function addExpense(e) {
-            e.preventDefault();
-
-            const title = document.getElementById('expenseTitle').value.trim();
-            const amount = parseFloat(document.getElementById('expenseAmount').value);
-            const payer = payerSelect.value;
-
-            // Get selected beneficiaries
-            const checkedBoxes = splitCheckboxes.querySelectorAll('input[type="checkbox"]:checked');
-            const beneficiaries = Array.from(checkedBoxes).map(cb => cb.value);
-
-            if (!payer) {
-                alert('Please select who paid for the expense.');
-                return;
-            }
-
-            if (beneficiaries.length === 0) {
-                alert('Select at least one member to split the expense with.');
-                return;
-            }
-
-            const newExpense = {
-                id: Date.now(),
-                title,
-                amount,
-                payer,
-                beneficiaries
-            };
-
-            expenses.push(newExpense);
-            saveData();
-            renderExpenses();
-
-            // Reset form fields
-            document.getElementById('expenseTitle').value = '';
-            document.getElementById('expenseAmount').value = '';
-        }
-
-        function deleteExpense(id) {
-            expenses = expenses.filter(e => e.id !== id);
-            saveData();
-            renderExpenses();
-        }
-
-        function renderExpenses() {
-            expenseList.innerHTML = '';
-
-            if (expenses.length === 0) {
-                expenseList.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:0.85rem; padding:1.5rem 0;">No expenses recorded yet.</div>';
-                return;
-            }
-
-            expenses.slice().reverse().forEach(exp => {
-                const item = document.createElement('div');
-                item.className = 'expense-item';
-                item.innerHTML = `
-                    <div class="expense-info">
-                        <h4>${escapeHtml(exp.title)}</h4>
-                        <p>Paid by <strong>${escapeHtml(exp.payer)}</strong> for [${exp.beneficiaries.map(b => escapeHtml(b)).join(', ')}]</p>
-                    </div>
-                    <div style="display:flex; align-items:center; gap:1rem;">
-                        <span class="expense-amount">₦${exp.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
-                        <button onclick="deleteExpense(${exp.id})" style="background:none; border:none; color:#FF5252; cursor:pointer;"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
-                expenseList.appendChild(item);
-            });
-        }
-
-        function clearAllData() {
-            if (confirm('Are you sure you want to clear all members and expenses?')) {
-                members = [];
-                expenses = [];
-                localStorage.removeItem('bs_members');
-                localStorage.removeItem('bs_expenses');
-                renderMembers();
-                renderExpenses();
-                receiptWrapper.style.display = 'none';
-            }
-        }
-
-        // --- GREEDY DEBT SETTLEMENT ALGORITHM ---
-        function calculateSettlement() {
-            if (members.length < 2) {
-                alert('Add at least 2 group members to calculate settlements.');
-                return;
-            }
-
-            if (expenses.length === 0) {
-                alert('Please record at least one expense first.');
-                return;
-            }
-
-            // Step 1: Calculate net balance for each person
-            const balances = {};
-            members.forEach(m => balances[m] = 0);
-
-            expenses.forEach(exp => {
-                const payer = exp.payer;
-                const amount = exp.amount;
-                const splitCount = exp.beneficiaries.length;
-
-                if (splitCount === 0) return;
-
-                const share = amount / splitCount;
-
-                // Credit the payer
-                if (balances[payer] !== undefined) {
-                    balances[payer] += amount;
-                }
-
-                // Debit each beneficiary
-                exp.beneficiaries.forEach(b => {
-                    if (balances[b] !== undefined) {
-                        balances[b] -= share;
-                    }
-                });
-            });
-
-            // Step 2: Separate into debtors (<0) and creditors (>0)
-            const debtors = [];
-            const creditors = [];
-
-            Object.keys(balances).forEach(person => {
-                const bal = balances[person];
-                if (bal < -0.01) {
-                    debtors.push({ person, amount: -bal });
-                } else if (bal > 0.01) {
-                    creditors.push({ person, amount: bal });
-                }
-            });
-
-            // Step 3: Match debtors to creditors using greedy approach
-            const transactions = [];
-
-            let i = 0, j = 0;
-            while (i < debtors.length && j < creditors.length) {
-                let debtor = debtors[i];
-                let creditor = creditors[j];
-
-                let payment = Math.min(debtor.amount, creditor.amount);
-
-                transactions.push({
-                    from: debtor.person,
-                    to: creditor.person,
-                    amount: payment
-                });
-
-                debtor.amount -= payment;
-                creditor.amount -= payment;
-
-                if (Math.abs(debtor.amount) < 0.01) i++;
-                if (Math.abs(creditor.amount) < 0.01) j++;
-            }
-
-            // Step 4: Render Skeuomorphic Receipt
-            renderReceipt(transactions);
-        }
-
-        function renderReceipt(transactions) {
-            receiptDate.textContent = `DATE: ${new Date().toLocaleDateString()} | TIME: ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
-            receiptTransactions.innerHTML = '';
-
-            if (transactions.length === 0) {
-                receiptTransactions.innerHTML = '<p style="text-align:center; padding:1rem 0; font-weight:bold;">All balances are even! No one owes anything.</p>';
-            } else {
-                transactions.forEach(t => {
-                    const row = document.createElement('div');
-                    row.className = 'transaction-line';
-                    row.innerHTML = `
-                        <span><span class="payer">${escapeHtml(t.from)}</span> pays <span class="payee">${escapeHtml(t.to)}</span></span>
-                        <span style="font-weight:700;">₦${t.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
-                    `;
-                    receiptTransactions.appendChild(row);
-                });
-            }
-
-            receiptWrapper.style.display = 'block';
-            receiptWrapper.scrollIntoView({ behavior: 'smooth' });
-        }
-
-        // Utility Helper
-        function escapeHtml(str) {
-            return str.replace(/[&<>"']/g, function(m) {
-                return {
-                    '&': '&amp;',
-                    '<': '&lt;',
-                    '>': '&gt;',
-                    '"': '&quot;',
-                    "'": '&#039;'
-                }[m];
-            });
-        }
-    }</script>
-    <script src="/main.js" defer></script>
+            <section class="section" id="why-bitsplitter">
+                <div class="landing-container">
+                    <div class="cta-band"><h2>Make the next shared expense the easy one.</h2><a class="hero-cta" href="/app">Open the workspace <span aria-hidden="true">→</span></a></div>
+                </div>
+            </section>
+        </main>
+        <footer class="landing-container">© 2026 BitSplitter · Simple group settlements</footer>
+    </div>
 </body>
 </html>
